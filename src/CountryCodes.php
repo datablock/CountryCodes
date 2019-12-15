@@ -14,11 +14,11 @@ class CountryCodes
             $this->database = include_once self::DB;
         }
 
-        $this->country = $country;
+        $this->setCountry($country);
     }
 
     /**
-     * Undocumented function
+     * Define a specific country after instance
      *
      * @param string|null $country
      * @return self
@@ -30,247 +30,219 @@ class CountryCodes
         return $this;
     }
 
-
-
-    public function getCountryName()
+    /**
+     * Get the database
+     *
+     * @param string|null $country
+     * @return array
+     */
+    public function getDatabase(?string $country=null): array
     {
-        $type = "country_name";
-        $database = $this->getDatabase();
+        $country = $this->isValidCountry($country) 
+            ? $country 
+            : $this->country;
 
-        if (null != $this->country && isset($database[$type]))
-        {
-            return $database[$type];
-        }
-
-        return $this->getData($type);
+        return $country 
+            ? $this->database[$country]
+            : $this->database;
     }
 
-    public function getIso2()
-    {
-        $type = "iso2";
-        $database = $this->getDatabase();
-
-        if (null != $this->country && isset($database[$type]))
-        {
-            return $database[$type];
-        }
-
-        return $this->getData($type);
-    }
-
-    public function getIso3()
-    {
-        $type = "iso3";
-        $database = $this->getDatabase();
-
-        if (null != $this->country && isset($database[$type]))
-        {
-            return $database[$type];
-        }
-
-        return $this->getData($type);
-    }
-
-    public function getTld()
-    {
-        $type = "tld";
-        $database = $this->getDatabase();
-
-        if (null != $this->country && isset($database[$type]))
-        {
-            return $database[$type];
-        }
-
-        return $this->getData($type);
-    }
-
-    public function getFips()
-    {
-        $type = "fips";
-        $database = $this->getDatabase();
-
-        if (null != $this->country && isset($database[$type]))
-        {
-            return $database[$type];
-        }
-
-        return $this->getData($type);
-    }
-
-    public function getIsoNumeric()
-    {
-        $type = "iso_numeric";
-        $database = $this->getDatabase();
-
-        if (null != $this->country && isset($database[$type]))
-        {
-            return $database[$type];
-        }
-
-        return $this->getData($type);
-    }
-
-    public function getGeonameId()
-    {
-        $type = "geonameid";
-        $database = $this->getDatabase();
-
-        if (null != $this->country && isset($database[$type]))
-        {
-            return $database[$type];
-        }
-
-        return $this->getData($type);
-    }
-
-    public function getE164()
-    {
-        $type = "e164";
-        $database = $this->getDatabase();
-
-        if (null != $this->country && isset($database[$type]))
-        {
-            return $database[$type];
-        }
-
-        return $this->getData($type);
-    }
-
-    public function getPhoneCode()
-    {
-        $type = "phone_code";
-        $database = $this->getDatabase();
-
-        if (null != $this->country && isset($database[$type]))
-        {
-            return $database[$type];
-        }
-
-        return $this->getData($type);
-    }
-
-    public function getContinent()
-    {
-        $type = "continent";
-        $database = $this->getDatabase();
-
-        if (null != $this->country && isset($database[$type]))
-        {
-            return $database[$type];
-        }
-
-        return $this->getData($type);
-    }
-
-    public function getCapital()
-    {
-        $type = "capital";
-        $database = $this->getDatabase();
-
-        if (null != $this->country && isset($database[$type]))
-        {
-            return $database[$type];
-        }
-
-        return $this->getData($type);
-    }
-
-    public function getTimezone()
-    {
-        $type = "timezone";
-        $database = $this->getDatabase();
-
-        if (null != $this->country && isset($database[$type]))
-        {
-            return $database[$type];
-        }
-
-        return $this->getData($type);
-    }
-
-    public function getCurrency()
-    {
-        $type = "currency";
-        $database = $this->getDatabase();
-
-        if (null != $this->country && isset($database[$type]))
-        {
-            return $database[$type];
-        }
-
-        return $this->getData($type);
-    }
-
-    public function getLanguageCodes()
-    {
-        $type = "language_codes";
-        $database = $this->getDatabase();
-
-        if (null != $this->country && isset($database[$type]))
-        {
-            return $database[$type];
-        }
-
-        return $this->getData($type);
-    }
-
-    public function getLanguages()
-    {
-        $type = "languages";
-        $database = $this->getDatabase();
-
-        if (null != $this->country && isset($database[$type]))
-        {
-            return $database[$type];
-        }
-
-        return $this->getData($type);
-    }
-
-    public function getArea()
-    {
-        $type = "area_km2";
-        $database = $this->getDatabase();
-
-        if (null != $this->country && isset($database[$type]))
-        {
-            return $database[$type];
-        }
-
-        return $this->getData($type);
-    }
-
-    
-    public function getDatabase()
-    {
-        if (null != $this->country && isset($this->database[$this->country]))
-        {
-            return $this->database[$this->country];
-        }
-
-        return $this->database;
-    }
-
-    public function getJsonDatabase()
+    /**
+     * Get the database as JSON file
+     *
+     * @param string|null $country
+     * @return string|array
+     */
+    public function getJsonDatabase(?string $country=null)
     {
         header('content-type: text/json');
-        echo json_encode($this->getDatabase());
+        echo json_encode($this->getDatabase($country));
+        exit;
     }
 
-    private function getData(string $type)
+    /**
+     * @param string|null $country
+     * @return string|array
+     */
+    public function getCountryName(?string $country=null)
     {
-        $database = $this->getDatabase();
-        $data = [];
+        return $this->getData($country, "country_name");
+    }
 
-        foreach ($database as $country => $value)
+    /**
+     * @param string|null $country
+     * @return string|array
+     */
+    public function getIso2(?string $country=null)
+    {
+        return $this->getData($country, "iso2");
+    }
+
+    /**
+     * @param string|null $country
+     * @return string|array
+     */
+    public function getIso3(?string $country=null)
+    {
+        return $this->getData($country, "iso3");
+    }
+
+    /**
+     * @param string|null $country
+     * @return string|array
+     */
+    public function getTld(?string $country=null)
+    {
+        return $this->getData($country, "tld");
+    }
+
+    /**
+     * @param string|null $country
+     * @return string|array
+     */
+    public function getFips(?string $country=null)
+    {
+        return $this->getData($country, "fips");
+    }
+
+    /**
+     * @param string|null $country
+     * @return string|array
+     */
+    public function getIsoNumeric(?string $country=null)
+    {
+        return $this->getData($country, "iso_numeric");
+    }
+
+    /**
+     * @param string|null $country
+     * @return string|array
+     */
+    public function getGeonameId(?string $country=null)
+    {
+        return $this->getData($country, "geonameid");
+    }
+
+    /**
+     * @param string|null $country
+     * @return string|array
+     */
+    public function getE164(?string $country=null)
+    {
+        return $this->getData($country, "e164");
+    }
+
+    /**
+     * @param string|null $country
+     * @return string|array
+     */
+    public function getPhoneCode(?string $country=null)
+    {
+        return $this->getData($country, "phone_code");
+    }
+
+    /**
+     * @param string|null $country
+     * @return string|array
+     */
+    public function getContinent(?string $country=null)
+    {
+        return $this->getData($country, "continent");
+    }
+
+    /**
+     * @param string|null $country
+     * @return string|array
+     */
+    public function getCapital(?string $country=null)
+    {
+        return $this->getData($country, "capital");
+    }
+
+    /**
+     * @param string|null $country
+     * @return string|array
+     */
+    public function getTimezone(?string $country=null)
+    {
+        return $this->getData($country, "timezone");
+    }
+
+    /**
+     * @param string|null $country
+     * @return string|array
+     */
+    public function getCurrency(?string $country=null)
+    {
+        return $this->getData($country, "currency");
+    }
+
+    /**
+     * @param string|null $country
+     * @return string|array
+     */
+    public function getLanguageCodes(?string $country=null)
+    {
+        return $this->getData($country, "language_codes");
+    }
+
+    /**
+     * @param string|null $country
+     * @return string|array
+     */
+    public function getLanguages(?string $country=null)
+    {
+        return $this->getData($country, "languages");
+    }
+
+    /**
+     * @param string|null $country
+     * @return string|array
+     */
+    public function getArea(?string $country=null)
+    {
+        return $this->getData($country, "area_km2");
+    }
+
+    /**
+     * @param string|null $country
+     * @return string|array
+     */
+    private function getData(?string $country, string $type)
+    {
+        // Define and check $Country
+        $country = $this->isValidCountry($country) 
+            ? $country 
+            : $this->country;
+
+        // Define database
+        $database = $this->getDatabase($country);
+
+        // return the string of data
+        if (null != $country) 
+        {
+            return $database[$type] ?? null;
+        }
+
+        // return an array of data
+        $data = [];
+        foreach ($database as $key => $value)
         {
             if (isset($value[$type]))
             {
-                $data[$country] = $value[$type];
+                $data[$key] = $value[$type];
             }
         }
 
         return $data;
     }
 
+    /**
+     * @param string|null $country
+     * @return string|array
+     */
+    private function isValidCountry(?string $country)
+    {
+        return isset($this->database[$country]);
+    }
 }
