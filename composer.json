@@ -1,0 +1,19 @@
+{
+    "name": "datablock/countrycodes",
+    "description": "Country codes and other info.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Arnaud BODEL",
+            "email": "contact@osw3.net"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {},
+    "autoload": {
+        "psr-4" : {
+            "Datablock\\CountryCodes\\" : "src/"
+        }
+    }
+}
